@@ -3,6 +3,7 @@ import turtle
 def rects(lis00):
     height = 2.40
     skk = turtle.Turtle()
+    skk.speed(0)
     skk.penup()
     for i, x in enumerate(lis00):        
         skk.goto(x[0],x[1])
@@ -22,7 +23,7 @@ def rects(lis00):
     x_low = min([x[0] for x in lis00])        
     y_low = min([x[1] for x in lis00]) 
     #draw scale:
-    skk.goto(x_low, y_low-80)#(0,-80)
+    skk.goto(x_low, y_low-120)
     skk.color('grey')
     skk.pendown()
     skk.right(90)
@@ -32,7 +33,7 @@ def rects(lis00):
     skk.left(90)
     skk.forward(5*esc)
     skk.penup()
-    skk.goto(x_low-18*esc, y_low-90*esc)
+    skk.goto(x_low-30*esc, y_low-135*esc)
     skk.pendown()    
     skk.write('1m')
     skk.hideturtle()
@@ -50,25 +51,31 @@ def rects(lis00):
     TotSupV = sum([x[3] for x in Res])
     Res.append(('All', TotArea, TotPerim, TotSupV))
     df = pd.DataFrame(Res, columns = ('#','Area[m2]','Perim[mL]','SupV[m2]'))    
-    print(df.to_string(index=False))#, header=False))
+    print(df.to_string(index=False))
     turtle.done()
 
-
-
+# Create a screen object
+screen = turtle.Screen()
 
 ##subdivisions of a place: (x, y, long x, long y)
-
-##sbdvs = [(0,0,200,80),(210,0,130,80),(210,90,130,110),(0,90,200,110),(0,210,340,40)]
-#depto lazo:
+#ex.: depto lazo:
 sbdvs = [(0,0,372,273),(380,0,198,138),(380,148,198,125),(292,273,80,57),(292,330,80,215),
          (380,283,198,126),(380,419,198,129),(0,281,284,250),(0,553,680,276),(680,553,97,265),
          (0,837,81,151),(81,837,63,93),(144,837,402,151),(546,837,134,158)]
-
 global esc
-esc = 0.5
+esc = 1
 sbdvs_esc = [(int(x[0]*esc),int(x[1]*esc),x[2]*esc,x[3]*esc) for x in sbdvs]        
 
-desp = [-300,-300]
-sbdvs2 = [(x[0]+desp[0],x[1]+desp[0],x[2],x[3])for x in sbdvs_esc]
-rects(sbdvs2)
+desp = [-500,-500]
+sbdvs2 = [(x[0]+desp[0],x[1]+desp[0],x[2],x[3])for x in sbdvs]
+
+#canvas size:
+cnv_wi = max([x[0]+x[2] for x in sbdvs])+300
+cnv_he = max([x[1]+x[3] for x in sbdvs])+300
+screen.screensize(cnv_wi, cnv_he)
+#set coordinates:
+screen.setworldcoordinates(-150, -150, cnv_wi, cnv_he)
+print(f"Canvas (width, height): {cnv_wi}, {cnv_he}")
+
+rects(sbdvs)
 
