@@ -1,6 +1,7 @@
 import pandas as pd       
 import turtle  
 def rects(lis00):
+    calc_data = True
     height = 2.40
     skk = turtle.Turtle()
     skk.speed(0)
@@ -22,6 +23,41 @@ def rects(lis00):
 
     x_low = min([x[0] for x in lis00])        
     y_low = min([x[1] for x in lis00]) 
+
+    #draw max measures (horizontal):    
+    draw_wi = max([x[0]+x[2] for x in lis00])
+    draw_he = max([x[1]+x[3] for x in lis00])
+    skk.goto(x_low, y_low-70)
+    skk.color('blue')
+    skk.pendown()
+    skk.right(90)
+    skk.forward(5*esc)
+    skk.left(90)
+    skk.forward(draw_wi*esc)
+    skk.left(90)
+    skk.forward(5*esc)
+    skk.penup()
+    skk.goto(int(draw_wi*0.5), y_low-72)
+    skk.pendown()    
+    skk.write(f"{round(draw_wi*0.01, 2)}m", False,'left',font=('Arial',7,'normal'))
+    skk.penup()
+    skk.right(90)
+    
+    #draw max measures (vertical):    
+    skk.goto(x_low-70, y_low)
+    skk.pendown()
+    skk.forward(5*esc)
+    skk.left(90)
+    skk.forward(draw_he*esc)
+    skk.left(90)
+    skk.forward(5*esc)
+    skk.penup()
+    skk.goto(x_low-130, int(draw_he*0.5))
+    skk.pendown()    
+    skk.write(f"{round(draw_he*0.01, 2)}m", False,'left',font=('Arial',7,'normal'))
+    skk.penup()
+    skk.right(180)
+    
     #draw scale:
     skk.goto(x_low, y_low-120)
     skk.color('grey')
@@ -37,21 +73,21 @@ def rects(lis00):
     skk.pendown()    
     skk.write('1m')
     skk.hideturtle()
-    Res = []
-
-    #calc data:
-    for i, x in enumerate(lis00):
-        Area = (x[2]*0.01*x[3]*0.01)*((1/esc)**2)
-        Perim = 2*(x[2]+x[3])*0.01*(1/esc)
-        SupV = Perim*height
-        Res.append((i+1, round(Area,2), round(Perim,2), round(SupV,2)))
-
-    TotArea = sum([x[1] for x in Res])
-    TotPerim = sum([x[2] for x in Res])
-    TotSupV = sum([x[3] for x in Res])
-    Res.append(('All', TotArea, TotPerim, TotSupV))
-    df = pd.DataFrame(Res, columns = ('#','Area[m2]','Perim[mL]','SupV[m2]'))    
-    print(df.to_string(index=False))
+    
+    if calc data:
+        Res = []
+        for i, x in enumerate(lis00):
+            Area = (x[2]*0.01*x[3]*0.01)*((1/esc)**2)
+            Perim = 2*(x[2]+x[3])*0.01*(1/esc)
+            SupV = Perim*height
+            Res.append((i+1, round(Area,2), round(Perim,2), round(SupV,2)))
+        
+        TotArea = sum([x[1] for x in Res])
+        TotPerim = sum([x[2] for x in Res])
+        TotSupV = sum([x[3] for x in Res])
+        Res.append(('All', TotArea, TotPerim, TotSupV))
+        df = pd.DataFrame(Res, columns = ('#','Area[m2]','Perim[mL]','SupV[m2]'))    
+        print(df.to_string(index=False))
     turtle.done()
 
 # Create a screen object
