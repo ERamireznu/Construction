@@ -10,7 +10,6 @@ def dimens(tur0, sta_coords, col, st_dire, dimens_3, wri_coords, words):
     wor0,wor1,wor2,wor3 = words[0],words[1],words[2],words[3]
     set_head = {'east':0, 'north':90, 'west':180, 'south':270}
     tur0.setheading(set_head[st_dire.lower()])  
-    
     tur0.goto(stx,sty)
     tur0.color(col)
     tur0.pendown()
@@ -39,26 +38,45 @@ def rects(lis00, hei=2.40, out_dims = True, intern_dims = True, show_rooms = Tru
             skk.left(90)
             skk.forward(x[3])
             skk.left(90)                               
+        #write room number:
         skk.penup()
         skk.goto(x[0]+int(x[2]*0.5),x[1]+int(x[3]*0.5))
         skk.pendown()
         skk.write(str(i+1))
         skk.penup()
-
+        if intern_dims:
+            skk.color('blue')
+            skk.goto(x[0]+int(x[2]*0.5),x[1]+7)  #hor
+            skk.pendown()
+            skk.write(f"{x[2]}", False,'left',('Arial',5,'normal'))
+            skk.penup()
+            skk.goto(x[0]+7,x[1]+int(x[3]*0.5))  #vert
+            skk.pendown()
+            skk.write(f"{x[3]}", False,'left',('Arial',5,'normal'))
+            skk.penup()        
+    
     x_low = min([x[0] for x in lis00])        
     y_low = min([x[1] for x in lis00])   
     draw_wi = max([x[0]+x[2] for x in lis00])
     draw_he = max([x[1]+x[3] for x in lis00])
-    if dim_max_horiz:   #draw max measures (horizontal)
+
+    #draw_scale:
+    dimens(skk,(x_low, y_low-120),'grey','south',(5,100,5),(x_low-30, y_low-135),
+       ('1m', False,'left',('Arial',7,'normal')))
+    if out_dims:
+        #draw max measures (horizontal)
         dimens(skk,(x_low, y_low-70),'blue','south',(5,draw_wi,5),(int(draw_wi*0.5), y_low-72),
                (f"{round(draw_wi*0.01, 2)}m", False,'left',('Arial',7,'normal')))
-    if dim_max_vert:    #draw max measures (vertical)
+        #draw max measures (vertical)
         dimens(skk,(x_low-70, y_low),'blue','east',(5,draw_he,5),(x_low-130, int(draw_he*0.5)),
            (f"{round(draw_he*0.01, 2)}m", False,'left',('Arial',7,'normal')))    
-    if draw_scale:
-        dimens(skk,(x_low, y_low-120),'grey','south',(5,100,5),(x_low-30, y_low-135),
-           ('1m', False,'left',('Arial',7,'normal')))
-    
+    if show_rooms:
+        skk.color('grey')
+        for i in range(len(lis00)):
+            skk.goto(draw_wi+70,(len(lis00)*20)*(i*(-15/200)+1))
+            skk.pendown()
+            skk.write(f"{i+1}) {rooms[i+1]}", False,'left',('Arial',5,'normal'))        
+            skk.penup()    
     skk.hideturtle()
     if calc data:
         Res = []
@@ -75,14 +93,16 @@ def rects(lis00, hei=2.40, out_dims = True, intern_dims = True, show_rooms = Tru
         print(df.to_string(index=False))
     turtle.done()
 
-#-----------------------------------------------------
+#---prmts-----------------------------------------------------------------------------------
 ##subdivisions of a place: (x, y, long x, long y)
-#example: depto lazo:
-sbdvs = [(0,0,372,273),(380,0,198,138),(380,148,198,125),(292,273,80,57),(292,330,80,223),
-         (380,283,198,126),(380,419,198,129),(0,281,284,250),(0,553,680,276),(680,553,97,265),
+#example (depto lazo):
+sbdvs = [(0,0,372,273),(292,273,80,57),(380,0,198,138),(380,148,198,125),(380,283,198,126),
+         (380,419,198,129),(292,330,80,223),(0,281,284,250),(0,553,680,276),(680,553,97,265),
          (0,837,81,151),(81,837,63,93),(144,837,402,151),(546,829,134,159)]
-
-#-----------------------------------------------------
+global rooms
+rooms = {1:'Dorm 1',2:'Dorm 1',3:'Baño 1',4:'Cl 1',5:'Cl 2',6:'Baño 2',7:'Pasillo',8:'Dorm 2',
+         9:'Living',10:'Comedor',11:'Logia',12:'Cocina',13:'Cocina',14:'Acceso'}
+#---prmts-----------------------------------------------------------------------------------
 # Create a screen object
 screen = turtle.Screen()
 #canvas size:
@@ -92,5 +112,6 @@ screen.screensize(cnv_wi, cnv_he)
 #set coordinates:
 screen.setworldcoordinates(-150, -150, cnv_wi, cnv_he)
 
+#rects(lis00, hei=2.40, out_dims = True, intern_dims = True, show_rooms = True, calc_data = True):
 rects(sbdvs)
 
