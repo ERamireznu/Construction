@@ -8,14 +8,9 @@ def dimens(tur0, sta_coords, col, st_dire, dimens_3, wri_coords, words):
     dim1, dim2, dim3 = dimens_3[0],dimens_3[1],dimens_3[2]
     wrx,wry = wri_coords[0],wri_coords[1]
     wor0,wor1,wor2,wor3 = words[0],words[1],words[2],words[3]
-    if st_dire.lower() == 'east':  
-        tur0.setheading(0)
-    elif st_dire.lower() == 'north':  
-        tur0.setheading(90)
-    elif st_dire.lower() == 'west':  
-        tur0.setheading(180)        
-    elif st_dire.lower() == 'south':  
-        tur0.setheading(270)
+    set_head = {'east':0, 'north':90, 'west':180, 'south':270}
+    tur0.setheading(set_head[st_dire.lower()])  
+    
     tur0.goto(stx,sty)
     tur0.color(col)
     tur0.pendown()
@@ -30,16 +25,15 @@ def dimens(tur0, sta_coords, col, st_dire, dimens_3, wri_coords, words):
     tur0.write(wor0,wor1,wor2,wor3)
     tur0.penup()
 
-def rects(lis00):
-    dim_max_horiz,dim_max_vert,draw_scale = True, True, True
-    calc_data = True
-    height = 2.40  #(m)
+def rects(lis00, hei=2.40, out_dims = True, intern_dims = True, show_rooms = True, calc_data = True):
+    height = hei  #(m)
     skk = turtle.Turtle()
     skk.speed(0)
     skk.penup()
     for i, x in enumerate(lis00):        
         skk.goto(x[0],x[1])
         skk.pendown()
+        skk.color('black')
         for j in range(2):
             skk.forward(x[2]) 
             skk.left(90)
